@@ -1,0 +1,11 @@
+# Nix build artifacts
+result
+result-*
+
+# Editor swap files
+*.swp
+.*.swp
+.swp
+
+# Sops-nix / secrets (if you use them later)
+.decrypted~*
