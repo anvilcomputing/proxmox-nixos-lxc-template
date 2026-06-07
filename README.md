@@ -1,34 +1,34 @@
-`# 🚀 Proxmox NixOS LXC Template & Fleet Builder`
+# 🚀 Proxmox NixOS LXC Template & Fleet Builder
 
-`A declarative, highly secure, and reproducible NixOS template specifically tailored for unprivileged Proxmox VE LXC containers.` 
+A declarative, highly secure, and reproducible NixOS template specifically tailored for unprivileged Proxmox VE LXC containers.
 
-``This repository leverages Nix Flakes and `deploy-rs` to manage container configurations remotely. It is built with a strict "no direct root login" security model and integrates Tailscale for seamless fleet networking.``
+`This repository leverages Nix Flakes and `deploy-rs` to manage container configurations remotely. It is built with a strict "no direct root login" security model and integrates Tailscale for seamless fleet networking.`
 
-`## ✨ Core Features & Architecture`
+## ✨ Core Features & Architecture
 
-``* **Unprivileged LXC Optimized:** Specifically suppresses systemd units that typically fail in unprivileged Proxmox LXC environments (e.g., `dev-mqueue.mount`, `sys-kernel-debug.mount`).``  
-``* **Sudoless Remote Deployment:** Utilizes `deploy-rs` to push configurations over SSH as a standard user (`anvilAdmin`), and automatically elevates via passwordless sudo to activate the system profile. Direct `root` SSH access is completely disabled.``  
-`* **Tailscale Userspace Networking:** Bypasses the need for complex kernel-level TUN device passthrough on the Proxmox host by routing Tailscale traffic through userspace. Firewall rules are pre-configured to prevent reverse-path filtering from blocking exit nodes.`  
-``* **Self-Maintaining:** Pre-configured with `auto-optimise-store` to hardlink identical files and a weekly automated garbage collection timer to keep container disk usage minimal.``  
-`* **Essential Tooling:** Batteries included (git, vim, curl, htop, tmux, fd, ripgrep, dnsutils, iproute2).`
+* **Unprivileged LXC Optimized:** Specifically suppresses systemd units that typically fail in unprivileged Proxmox LXC environments (e.g., `dev-mqueue.mount`, `sys-kernel-debug.mount`).``  
+* **Sudoless Remote Deployment:** Utilizes `deploy-rs` to push configurations over SSH as a standard user (`anvilAdmin`), and automatically elevates via passwordless sudo to activate the system profile. Direct `root` SSH access is completely disabled.``  
+* **Tailscale Userspace Networking:** Bypasses the need for complex kernel-level TUN device passthrough on the Proxmox host by routing Tailscale traffic through userspace. Firewall rules are pre-configured to prevent reverse-path filtering from blocking exit nodes.`  
+* **Self-Maintaining:** Pre-configured with `auto-optimise-store` to hardlink identical files and a weekly automated garbage collection timer to keep container disk usage minimal.
+* **Essential Tooling:** Batteries included (git, vim, curl, htop, tmux, fd, ripgrep, dnsutils, iproute2).
 
-`---`
+---
 
-`## 🛠️ Prerequisites`
+## 🛠️ Prerequisitess
 
-`Before deploying, ensure you have the following on your local deployment machine:`  
-``* Nix installed with `flakes` and `nix-command` enabled.``  
-``* An SSH keypair generated for your admin user (e.g., `~/.ssh/id_ed25519_anvil_fleet_admin`).``  
-`* A running Proxmox LXC container booted from a base NixOS rootfs tarball.`
+Before deploying, ensure you have the following on your local deployment machine:`  
+* Nix installed with `flakes` and `nix-command` enabled.``  
+* An SSH keypair generated for your admin user (e.g., `~/.ssh/id_ed25519_anvil_fleet_admin`).
+* A running Proxmox LXC container booted from a base NixOS rootfs tarball.
 
-`---`
+---
 
-`## 🚀 Bootstrap & Initial Deployment`
+## 🚀 Bootstrap & Initial Deployment
 
-``*Note: NixOS has a strict security model. To allow our non-root user (`anvilAdmin`) to push configurations to the Nix store, we must first tell the Nix daemon to trust them. This requires a one-time "Bootstrap" deployment as `root`.*``
+*Note: NixOS has a strict security model. To allow our non-root user (`anvilAdmin`) to push configurations to the Nix store, we must first tell the Nix daemon to trust them. This requires a one-time "Bootstrap" deployment as `root`.*``
 
-`### Step 1: The Root Bootstrap`  
-``1. In `flake.nix`, temporarily set the SSH users to `root`:``  
+### Step 1: The Root Bootstrap`  
+1. In `flake.nix`, temporarily set the SSH users to `root`:``  
    ```` ```nix ````  
    `deploy.nodes.container = {`  
      `sshUser = "root"; # Temporarily root`  
